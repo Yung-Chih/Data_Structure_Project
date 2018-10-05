@@ -4,9 +4,6 @@
 
 using namespace std;
 
-ifstream IF( "matrix.data", ios::in);
-ofstream OF( "final.peak", ios::out);
-
 int m,n;
 vector<int> test[3];
 vector< pair<int,int> > point;
@@ -17,17 +14,20 @@ int main(){
     ios_base::sync_with_stdio(false);
     cin.tie(0);
     cout.tie(0);
-    
-    IF >> m >> n;
+    cin >> m >> n;
     test[0].resize(n, -1e9);
     test[1].resize(n, -1e9);
     test[2].resize(n, -1e9);
 
 
-    for(int i=0; i<m; i++){
+    for(int j=0; j<n; j++){
+        cin >> test[0][j];
+    }
+
+    for(int i=1; i<m; i++){
         for(int j=0; j<n; j++){
-            IF >> test[i%3][j];
-            if( i > 0 && peak(i-1,j) ){
+            cin >> test[i%3][j];
+            if( peak(i-1,j) ){
                 point.emplace_back(i,j+1);
             }
         }
@@ -39,11 +39,9 @@ int main(){
         }
     }
 
-    OF << point.size() << '\n';
     cout << point.size() << '\n';
 
     for( auto& i: point){
-        OF << i.first << ' ' << i.second << '\n';
         cout << i.first << ' ' << i.second << '\n';
     }
 
