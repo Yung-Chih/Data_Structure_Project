@@ -1,36 +1,34 @@
 #include <iostream>
 #include <vector>
 #include <fstream>
+#include <string>
 
 using namespace std;
 
-ifstream IF( "matrix.data", ios::in);
-ofstream OF( "final.peak", ios::out);
-
-void ver1( int& m, int& n);
 inline bool peak( int& x, int& y, vector< vector<int> > m);
 
-int main(){
+int main(int argc, char const* argv[]){
+
+    string root = argv[1];
+    root += "\\matrix.data";
+    
+    ifstream fin( root.c_str() , ios::in);
+    ofstream fout( "final.peak", ios::out);
 
     int m,n;
-    IF >> m >> n;
-    ver1(m,n);
-    return 0;
-}
-
-void ver1( int& m, int& n){
+    fin >> m >> n;
     vector< vector<int> > map;
     map.resize(m);
     for(int i=0; i<m; i++){
         map[i].resize(n);
         for(int j=0; j<n; j++){
-            IF >> map[i][j];
+            fin >> map[i][j];
         }
     }
 
     for(int i=0; i<m; i++){
         for(int j=0; j<n; j++){
-            cout << map[i][j] << " \n"[j==n-1];
+            fout << map[i][j] << " \n"[j==n-1];
         }
     }
 
@@ -45,10 +43,11 @@ void ver1( int& m, int& n){
         }
     }
 
-    OF << point.size() << '\n';
+    fout << point.size() << '\n';
     for( auto& i: point){
-        OF << i.first << ' ' << i.second << '\n';
+        fout << i.first << ' ' << i.second << '\n';
     }
+    return 0;
 }
 
 inline bool peak( int& x, int& y, vector< vector<int> > m){
