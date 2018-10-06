@@ -15,7 +15,7 @@ int main(int argc, char const *argv[])
     string root = argv[1];
     string out = argv[1];
     root += "\\matrix.data";
-    out += "noVec.peak";
+    out += "\\noVec.peak";
     
     ifstream fin( root.c_str() , ios::in);
     ofstream fout( out.c_str(), ios::out);
