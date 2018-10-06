@@ -2,12 +2,15 @@
 #include <vector>
 #include <fstream>
 #include <string>
+#include <time.h>
 
 using namespace std;
 
 inline bool peak( short& x, short& y, vector< vector<long int> >& m);
 
 int main(int argc, char const* argv[]){
+    double Start, End;
+    Start = clock();
 
     string root = argv[1];
     string out = argv[1];
@@ -44,6 +47,9 @@ int main(int argc, char const* argv[]){
     for(int i=0; i<point.size(); i++){
         fout << point[i].first << ' ' << point[i].second << '\n';
     }
+
+    End = clock();
+    cout << (End - Start) / CLOCKS_PER_SEC << '\n';
     return 0;
 }
 

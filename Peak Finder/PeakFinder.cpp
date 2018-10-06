@@ -13,10 +13,9 @@ inline bool peak(short x, short y);
 int main(int argc, char const *argv[])
 {
     string root = argv[1];
-    root += "\\matrix.data";
     
-    ifstream fin( root.c_str() , ios::in);
-    ofstream fout( "final.peak", ios::out);
+    ifstream fin( (root + "\\matrix.data").c_str() , ios::in);
+    ofstream fout( (root + "\\final.peak").c_str(), ios::out);
 
 
     fin >> row >> col;
@@ -44,7 +43,7 @@ int main(int argc, char const *argv[])
     }
 
     fout << cnt << '\n';
-    for(i=0; i<cnt; i++)
+    for(int i=0; i<cnt; i++)
         fout << ans[i].first << ' ' << ans[i].second << '\n';
 
     return 0;
