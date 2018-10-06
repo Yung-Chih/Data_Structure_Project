@@ -13,11 +13,12 @@ inline bool peak(short x, short y);
 int main(int argc, char const *argv[])
 {
     string root = argv[1];
+    string out = argv[1];
     root += "\\matrix.data";
+    out += "noVec.peak";
     
     ifstream fin( root.c_str() , ios::in);
-    ofstream fout( "final.peak", ios::out);
-
+    ofstream fout( out.c_str(), ios::out);
 
     fin >> row >> col;
     short i,j;
