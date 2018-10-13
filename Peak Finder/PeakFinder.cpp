@@ -7,7 +7,7 @@ using namespace std;
 
 short m,n;
 vector< long int > test[3];
-vector< pair<long int,long int> > point;
+vector< pair<short, short> > point;
 
 inline bool peak(short x, short y);
 
@@ -36,14 +36,14 @@ int main(int argc, char const *argv[])
         for( j=0; j<n; j++){
             fin >> test[i%3][j];
             if( peak(i-1,j) ){
-                point.push_back( pair<long int, long int>(i,j+1) );
+                point.push_back( pair<short, short>(i,j+1) );
             }
         }
     }
 
     for( j=0; j<n; j++){
         if( peak(m-1,j) ){
-            point.push_back( pair<long int, long int>(m,j+1) );
+            point.push_back( pair<short, short>(m,j+1) );
         }
     }
 
