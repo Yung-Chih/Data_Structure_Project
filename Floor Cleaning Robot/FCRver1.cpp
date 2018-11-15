@@ -4,6 +4,7 @@
 #include<fstream>
 #include<algorithm>
 #include<tuple>
+#include<string>
 #include<windows.h>
 
 #define WALL 1e9
@@ -71,12 +72,14 @@ private:
 int main(int argc, char const *argv[])
 {
     // BUG : go through the R //
-    ifstream fin("center.data", ios::in);
-    ofstream fout("final.path", ios::out);
+    string path = argv[1];
+    ifstream fin( (path+"\\floor.data").c_str(), ios::in);
+    ofstream fout( (path+"\\final.path").c_str(), ios::out);
     
     fin >> m >> n >> life;
+    if( life&1 ) life--;
     input(fin);
-    int s = 0;
+
     int d = BFS();
     cout << "max distance: " << d << endl;
     if( d*2 > life ){
@@ -111,7 +114,7 @@ int main(int argc, char const *argv[])
             CC.charge(life);
         }
         display(CC.pos().first, CC.pos().second);
-        cout << "total step: " << ans.size() << " " << ++s << endl;
+        cout << "total step: " << ans.size() << endl;
         cout << "-----------------------------------\n";
         if( CC.life() == 0 ){
             cout << "\aError: run out of Life\a" << endl;
@@ -123,8 +126,8 @@ int main(int argc, char const *argv[])
         }
         prev = CC.pos();
         //Sleep(250);
-        system("PAUSE");
-        system("CLS");
+        //system("PAUSE");
+        //system("CLS");
     }
 
     while( !CC.at(Rx,Ry) ){
@@ -137,7 +140,7 @@ int main(int argc, char const *argv[])
             CC.charge(life);
         }
         display(CC.pos().first, CC.pos().second);
-        cout << "total step: " << ans.size() << " " << ++s << endl;
+        cout << "total step: " << ans.size() << endl;
         cout << "-----------------------------------\n";
         if( CC.life() == 0 ){
             cout << "\aError: run out of Life\a" << endl;
@@ -149,8 +152,8 @@ int main(int argc, char const *argv[])
         }
         prev = CC.pos();
         //Sleep(250);
-        system("PAUSE");
-        system("CLS");
+        //system("PAUSE");
+        //system("CLS");
     }
 
     fout << ans.size() << endl;

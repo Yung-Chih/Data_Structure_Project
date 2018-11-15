@@ -42,9 +42,11 @@ void display(int x, int y, int life){
 
 bool check_testcase();
 
-int main(){
-    ifstream fin( "center.data", ios::in);
-    ifstream ain( "final.path", ios::in);
+int main(int argc, char const *argv[])
+{
+    string path = argv[1];
+    ifstream fin( (path+"\\floor.data").c_str(), ios::in);
+    ifstream ain( (path+"\\final.path").c_str(), ios::in);
 
     fin >> m >> n >> life;
     cout << m << ' ' << n << ' ' << life << endl;
