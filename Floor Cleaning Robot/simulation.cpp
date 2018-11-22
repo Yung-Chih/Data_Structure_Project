@@ -50,7 +50,7 @@ int main(int argc, char const *argv[])
 
     fin >> m >> n >> life;
     cout << m << ' ' << n << ' ' << life << endl;
-    assert( m < 1000 && n < 1000 );
+    assert( m <= 1000 && n <= 1000 && m > 0 && n > 0);
 
     for(int i=0; i<m; i++){
         for(int j=0; j<n; j++){
@@ -64,11 +64,13 @@ int main(int argc, char const *argv[])
     }
 
     int M = BFS();
+    cout << "longest dist:" << M << endl;
     assert( life >= M*2 );
+    cout << "dirty:" << dirty << endl;
     assert( check_testcase() );
 
     int cur_life = life;
-    size_t k; 
+    size_t k;
     ain >> k;
     int px = Rx, py = Ry;
     int o_x = -1, o_y = -1;
@@ -78,22 +80,24 @@ int main(int argc, char const *argv[])
         assert( x < m && x >= 0 );
         assert( y < n && y >= 0 );
         assert( map[x][y] == 'R' || map[x][y] == '0' || map[x][y] == '.');
-        cout << cur_life << endl;
-        cout << (cur_life>0) << endl;
+        //cout << cur_life << endl;
+        //cout << (cur_life>0) << endl;
         assert( cur_life > 0 );
         assert( (abs(px-x) + abs(py-y)) == 1 );
-        
+
         dirty -= (vis[x][y] == false);
 
         vis[x][y] = true;
         cur_life--;
         if( x == Rx && y == Ry )
             cur_life = life;
-        display(x,y, cur_life);
+        //display(x,y, cur_life);
 
         /// check if go through the R
         if( o_x != -1 && o_y != -1){
-            cout << "enter & out is different" << endl;
+            if( !(o_x == x && o_y == y ) ){
+                cout << "enter & out is different" << endl;
+            }
             assert( o_x == x && o_y == y );
         }
 
@@ -102,6 +106,7 @@ int main(int argc, char const *argv[])
         }
         else o_x = o_y = -1;
         px = x, py = y;
+        //system("PAUSE");
 
     }
 

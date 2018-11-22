@@ -7,7 +7,7 @@ struct P{
 };
 char s[105][105];
 int id[105][105],cnt;
-int st[10005];
+int st[100005];
 vector<P>p;
 
 ofstream fout( "maze.data", ios::out);
@@ -25,7 +25,7 @@ inline void print(int n,int m){
 	}
 }
 int main(){
-	int n=25,m=25;
+	int n=100,m=100;
 	fout << n << " " << m << " " << 100 << endl;
 	for(int i=0;i<n;++i){
 		for(int j=0;j<m;++j){
@@ -37,7 +37,7 @@ int main(){
 			id[i][j]=++cnt;
 			s[i][j]='0';
 		}
-	} 
+	}
 	for(int i=1;i<n-1;++i){
 		for(int j=1;j<m-1;++j){
 			if(s[i][j]== '1'){
@@ -51,7 +51,7 @@ int main(){
 	}
 	for(int i=1;i<=cnt;++i)st[i]=i;
 	srand(time(0));
-	random_shuffle(p.begin(),p.end()); 
+	random_shuffle(p.begin(),p.end());
 	for(int i=0;i<(int)p.size();++i){
 		if(find(p[i].a)!=find(p[i].b)){
 			st[find(p[i].a)]=find(p[i].b);
