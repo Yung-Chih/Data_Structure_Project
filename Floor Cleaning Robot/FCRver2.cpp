@@ -64,6 +64,7 @@ int main(int argc, char const *argv[])
     process_floor();
 
     FloorCleaner FC(R, LIFE);
+    //cout << "Clean Start" << endl;
     while( dirty ){
         //cout << "------------------------------\n";
         //FC.print_route();
@@ -90,6 +91,7 @@ int main(int argc, char const *argv[])
         system("PAUSE");
         */
     }
+    //cout << "Clean end, Go home" << endl;
     while( FC.pos() != R ){
         FC.go_home();
         /*
@@ -103,8 +105,8 @@ int main(int argc, char const *argv[])
     }
     //FC.print_route();
     FC.print_route(fout);
-    cout << "total step: " << FC.total_step() << endl;
-    cout << "End Normally" << endl;
+    //cout << "total step: " << FC.total_step() << endl;
+    //cout << "End Normally" << endl;
     return 0;
 }
 
@@ -201,8 +203,8 @@ void FloorCleaner::nearest_dirty(){
     queue<pii> q;
 
     q.emplace(_pos);
-    dir[_pos.first][_pos.second] = 7122;
-    dir[R.first][R.second] = 7122;
+    dir[_pos.first][_pos.second] = 0;
+    dir[R.first][R.second] = 0;
     while( !q.empty() && route.empty() ){
         pii now = q.front();
         q.pop();
