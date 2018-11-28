@@ -24,10 +24,19 @@ bool valid(const int& x, const int& y, vector< vector<int> >& map){
 int BFS(vector<vector<int>>& map);
 
 
-int main(){
+
+int main(int argc, char const *argv[])
+{
+
+    string path(argv[1]);
+    ifstream fin ( (path+"\\floor.data").c_str(), ios::in );
+    int a,b,c;
+    fin >> a >> b >> c;
+    if( !fin ){
+        cout << "no file" << endl;
+        return -1;
+    }
     vector<string> map;
-    ifstream fin( "alpca.data", ios::in);
-    ofstream fout( "out.data", ios::out);
 
     string s;
     while( fin >> s ){
@@ -51,6 +60,7 @@ int main(){
     }
 
     int B = BFS(GGG);
+    cout << B << '\n';
     /*
     cout << BFS(GGG) << endl;
 
@@ -67,14 +77,15 @@ int main(){
 
 
 
-    fout << map.size() << " " << map[0].size() << " " << B*2+1 << endl;
-
+    cout << map.size() << " " << map[0].size() << " " << B*2+1 << endl;
+    /*
     for(int i=0; i<map.size(); i++){
         for(int j=0; j<map[i].size(); j++){
-            fout << map[i][j];
+            cout << map[i][j];
         }
-        fout << endl;
+        cout << endl;
     }
+    */
 }
 
 
