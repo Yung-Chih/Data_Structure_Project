@@ -1,6 +1,4 @@
 #include<bits/stdc++.h>
-#include<ctime>
-#include<cassert>
 #define WALL (int)1e9
 
 using namespace std;
@@ -10,17 +8,12 @@ using tiii = tuple<int, int, int>;
 const int dir_x[4] = {0,1,0,-1},
           dir_y[4] = {1,0,-1,0};
 
-struct Node{
-    int dist = -1;
-    int cnt = 0;
-};
-
 int m, n, LIFE, dirty=0;
 int entry[4] = {0, 0, 0, 0};
 int dis[4][4];
 int p[4][4];
 pii R;
-vector< vector<Node> > Floor;
+vector< vector<int> > Floor;
 vector< vector<pii> > dp;
 vector< pii > S_route[4][4];
 
@@ -28,16 +21,12 @@ inline void init_input( ifstream& fin );
 inline int dp_update( const pii& pos, const int& deep);
 inline vector<pii> shortest_route( const pii& from,const pii& to );
 
-inline ostream& operator << ( ostream& cout, pii& p ){
-    return cout << p.first << ' ' << p.second;
-}
-
 inline bool isWall(const int& x, const int& y ){
     if( x >= m ) return true;
     if( x <  0 ) return true;
     if( y >= n ) return true;
     if( y < 0  ) return true;
-    return Floor[x][y].dist == WALL;
+    return Floor[x][y] == WALL;
 }
 inline bool isWall( const pii& pos ){
     return isWall( pos.first, pos.second );
@@ -45,7 +34,7 @@ inline bool isWall( const pii& pos ){
 
 inline int Step_to_R(const int& x, const int& y){
     if( isWall(x,y) ) return 1e9;
-    return abs(Floor[x][y].dist);
+    return abs(Floor[x][y]);
 }
 inline int Step_to_R(const pii& pos){
     return Step_to_R(pos.first, pos.second);
@@ -53,7 +42,7 @@ inline int Step_to_R(const pii& pos){
 
 inline bool isClean(const int& x, const int& y){
     if( isWall(x,y) ) return true;
-    return Floor[x][y].dist <= 0;
+    return Floor[x][y] <= 0;
 }
 inline bool isClean(const pii& pos){
     return isClean(pos.first, pos.second);
@@ -76,24 +65,6 @@ inline int dir_a_to_b(const pii& a, const pii&b ){
     if( dx == -1 && dy == 0)  return 3;
     return -1;
 }
-inline void display(const pii& pos){
-    for(int i=0; i<m; i++){
-        for(int j=0; j<n; j++){
-            pii now(i,j);
-            if( now == R )
-                cout << 'R';
-            else if( now == pos )
-                cout << 'C';
-            else if( isWall(now) )
-                cout << '-';
-            else if( isClean(now))
-                cout << '.' ;
-            else
-                cout << '0';
-            cout << " \n"[j == n-1];
-        }
-    }
-}
 
 class FloorCleaner{
 public:
@@ -102,8 +73,6 @@ public:
     void charge(const int& life){ _life = life; }
     void go_home();
     void auto_clean();
-    //bool go_to( const pii& to);
-    vector<pii> go_to( const pii& to);
     void change_entry();
     void walk(const pii& to){
         _pos = to;
@@ -111,23 +80,15 @@ public:
         _route.emplace_back(to);
         if( !isClean(to) ){
             dirty--;
-            Floor[to.first][to.second].dist *= -1;
+            Floor[to.first][to.second] *= -1;
         }
         if( _pos == R )
             charge(LIFE);
-        
     }
     void walk(const int& x, const int& y){
         walk( pii(x,y) );
     }
     void restart();
-    void print_status(){
-        cout << "life: " << _life << ", pos: (" << _pos.first << ", " << _pos.second << ")" << endl;
-    }
-    void print_route(){
-        for( pii& p : _route )
-            cout << p.first << ' ' << p.second << '\n';
-    }
     void print_route(ofstream& fout){
         fout << _route.size() << '\n';
         for( pii& p : _route )
@@ -135,7 +96,6 @@ public:
     }
     const pii& pos(){ return _pos; };
     const int& life(){ return _life; };
-    size_t total_step(){ return _route.size(); }
 private:
     pii _pos;
     int _life;
@@ -143,68 +103,36 @@ private:
 };
 
 
-
-
-
-
-
 int main(int argc, char const *argv[])
 {
-    clock_t t;
 
-    t = clock();
     string path(argv[1]);
-    ifstream fin ( (path+"\\floor.data").c_str(), ios::in );
-    
-    if( !fin ){
-        cout << "no file" << endl;
-        return -1;
-    }
-
+    ifstream fin ( (path+"/floor.data").c_str(), ios::in );
     init_input(fin);
     fin.close();
-    FloorCleaner FC(R, LIFE);
-    cout << "Clean Start" << '\n';
-    while( dirty ){
-        
-        if( dirty <= 10000 ){
-            cout << "dirty: " << dirty << '\n';
-            FC.print_status();
-            display( FC.pos() );
-        }
 
-        system("PAUSE");
-        
+    FloorCleaner FC(R, LIFE);
+
+    while( dirty ){
+
         if( FC.pos() == R ){
-            //cout << "restart\n";
-            //clock_t test = clock();
             FC.restart();
-            
-            //cout << "dp:" << ((float)(clock()-test)/CLOCKS_PER_SEC) << '\n';
         }
         else if( Step_to_R(FC.pos()) >= FC.life() ){
-            //cout << "go home\n";
             FC.go_home();
         }
         else{
-            //cout << "auto clean\n";
             FC.auto_clean();
         }
-
-        //system("PAUSE");
-        //cout << ((float)(clock()-t)/CLOCKS_PER_SEC) << '\n';
     }
-    cout << "Clean end\n";
     while( FC.pos() != R ){
         FC.go_home();
-        //cout << ((float)(clock()-t)/CLOCKS_PER_SEC) << '\n';
     }
 
-    ofstream fout( (path+"\\final.path").c_str(), ios::out );
+    ofstream fout( (path+"/final.path").c_str(), ios::out );
     FC.print_route(fout);
     fout.close();
-    cout << "end Normally \n"; 
-    cout << ((float)(clock()-t)/CLOCKS_PER_SEC) << '\n';
+
     return 0;
 }
 
@@ -220,27 +148,25 @@ inline void init_input( ifstream& fin ){
         for(int j=0; j<n; j++){
             char c; fin >> c;
 
-            Floor[i][j].dist = ( c == '1' ? 1e9 : -1 ); 
+            Floor[i][j] = ( c == '1' ? 1e9 : -1 );
             dirty += ( c == '0' );
             if( c == 'R' )
                 R.first = i, R.second = j;
         }
     }
-    cout << "input end" << '\n';
     /// BFS O( n*m )
     queue<pii> q;
     q.emplace( R );
-    Floor[R.first][R.second].dist = 0;
-    
+    Floor[R.first][R.second] = 0;
+
     while( !q.empty() ){
         pii now = q.front(); q.pop();
-        //cout << now.first << ' ' << now.second << ":" << Step_to_R(now) << '\n';
 
         for(int i=0; i<4; i++){
             int x = now.first + dir_x[i], y = now.second + dir_y[i];
             if( isWall(x,y) ) continue;
-            if( Floor[x][y].dist == -1 ){
-                Floor[x][y].dist = Step_to_R(now) + 1;
+            if( Floor[x][y] == -1 ){
+                Floor[x][y] = Step_to_R(now) + 1;
                 q.emplace(x,y);
             }
         }
@@ -252,15 +178,10 @@ inline void init_input( ifstream& fin ){
         if( isWall(x,y) ) continue;
         entry[i] = 1;
     }
-    cout << "Entry: ";
-    for(int i=0; i<4; i++){
-        cout << entry[i] << ' ';
-    }
-    cout << endl;
 
     for(int i=0; i<4; i++){
         for(int j=0; j<4; j++){
-            
+
             pii f( R.first + dir_x[i], R.second + dir_y[i] );
             pii t( R.first + dir_x[j], R.second + dir_y[j] );
             S_route[i][j] = shortest_route( f, t);
@@ -269,8 +190,7 @@ inline void init_input( ifstream& fin ){
             p[i][j] = -1;
             if( Step_to_R(t) + dis[i][j] + 1 > LIFE )
                 dis[i][j] = 1e9;
-            
-            //cout << i << " to " << j << ", cost: " << dis[i][j] << '\n';
+
         }
     }
 
@@ -282,26 +202,7 @@ inline void init_input( ifstream& fin ){
                     p[i][j] = k;
                 }
 
-    /*
-    for(int i=0; i<4; i++ ){
-        for(int j=0; j<4; j++){
-            if( dis[i][j] != 1e9)
-                cout << dis[i][j] << " \n"[j==3];
-            else
-                cout << '-' << " \n"[j==3];
-        }
-    }
-    for(int i=0; i<4; i++ ){
-        for(int j=0; j<4; j++){
-            if( p[i][j] != -1)
-                cout << p[i][j] << " \n"[j==3];
-            else
-                cout << '-' << " \n"[j==3];
-        }
-    }
-    */
-    
-    cout << "init end" << '\n';
+
 }
 
 void FloorCleaner::go_home(){
@@ -316,7 +217,6 @@ void FloorCleaner::go_home(){
         else if ( Step_to_R(adj) == Step_to_R(nxt) && !isClean(adj) )
             nxt = adj;
     }
-    //cout << "home:" << nxt.first << ' ' << nxt.second << '\n';
     this->walk(nxt);
 }
 
@@ -341,74 +241,42 @@ void FloorCleaner::restart(){
     if( cnt >= 2 )
         walk( _route[cnt-2] );
 
-    
+
     for(int i=0; i<m; i++)
         fill( dp[i].begin(), dp[i].end(), pii(-1, -1) );
     dp[R.first][R.second].first = dp_update(_pos, _life);
 
-    
-    //assert( dp[_pos.first][_pos.second].first > 0 );
-    //cout << "dp:" << dp[_pos.first][_pos.second].first << '\n';
-    
+
     if(  dp[_pos.first][_pos.second].first == 0 ){
         change_entry();
         return;
     }
-    
-    
-    
-    
-    for(int i=0; i<m; i++){
-        for(int j=0; j<n; j++){
-            if(dp[i][j].first == -1)
-                cout << " " << " \n"[j==n-1];
-            else 
-                cout << dp[i][j].first << " \n"[j==n-1];
-        }
-    }
-    cout << "--------------------------\n";
-    for(int i=0; i<m; i++){
-        for(int j=0; j<n; j++){
-            if(dp[i][j].second == -1)
-                cout << " " << " \n"[j==n-1];
-            else 
-                cout << dp[i][j].second << " \n"[j==n-1];
-        }
-    }
-    
+
     while( dp[_pos.first][_pos.second].second != -1 ){
         int& d = dp[_pos.first][_pos.second].second;
         walk( _pos.first + dir_x[d], _pos.second + dir_y[d] );
     }
-    
-	cout << "end" << '\n';
 
-    system("PAUSE");
-    
 }
 
 inline int dp_update( const pii& pos, const int& deep){
-    
+
     stack<int> st;
     st.emplace( pos.first*1000 + pos.second );
 
-    //cout << "R: " << R.first << ' ' << R.second << '\n';
     while( !st.empty() ){
         int x = st.top()/1000;
         int y = st.top()%1000;
         int cnt = 0, M = 0;
-        //cout << x << ' ' << y << ",dp: " << dp[x][y].first << '\n';
 
         for(int i=0; i<4; i++){
             int nx = x + dir_x[i];
             int ny = y + dir_y[i];
-            //if( isWall(nx,ny) ) continue;
             if( isWall(nx,ny) || Step_to_R(nx, ny) < Step_to_R(x, y) ) continue;
 
             if( !inside_dp(nx, ny) && (int)st.size() + Step_to_R(nx,ny) <= deep ){
                 st.emplace( nx*1000 + ny );
                 cnt++;
-                //cout << "push:" << nx << ' ' << ny << '\n';
                 break;
             }
 
@@ -422,7 +290,6 @@ inline int dp_update( const pii& pos, const int& deep){
         if( inside_dp(x,y) )
             st.pop();
     }
-    //cout << "R: " << R.first << ' ' << R.second << '\n';
     return dp[pos.first][pos.second].first;
 }
 
@@ -430,7 +297,7 @@ void FloorCleaner::change_entry(){
     int s = dir_a_to_b(R, _pos);
     vector<int> point;
     entry[s] = 2;
-    
+
     for(int i=(s+1)%4; i!=s; i = (i+1)%4){
         if( entry[i] == 1 ){
             point.emplace_back(s);
@@ -447,7 +314,6 @@ void FloorCleaner::change_entry(){
     for(int i=1; i<(int)point.size(); i++){
         int& a = point[i-1];
         int& b = point[i];
-        //cout <<"a,b:"<< a << ' ' << b << '\n';
         for( auto rit = S_route[a][b].rbegin(); rit != S_route[a][b].rend(); rit++)
             walk( *rit );
         if( i != (int)point.size() -1 ){
@@ -455,11 +321,10 @@ void FloorCleaner::change_entry(){
             walk( _route[ _route.size()-2 ] );
         }
     }
-    //cout << '\n';
-    //system("PAUSE");
-    
+
 }
-vector<pii> shortest_route( const pii& from,const pii& to ){
+
+inline vector<pii> shortest_route( const pii& from,const pii& to ){
     vector<pii> route;
     if( isWall(from) || isWall(to) || from == to ) return route;
 
@@ -474,10 +339,9 @@ vector<pii> shortest_route( const pii& from,const pii& to ){
     while( !q.empty() ){
         int x = q.front()/1000;
         int y = q.front()%1000;
-        //cout << x << ' ' << y << '\n';
         if( x == to.first && y == to.second ) break;
         q.pop();
-        
+
         for(int i=0; i<4; i++){
             int nx = x + dir_x[i];
             int ny = y + dir_y[i];
@@ -486,20 +350,8 @@ vector<pii> shortest_route( const pii& from,const pii& to ){
             dir[nx][ny] = (i+2)%4;
             q.emplace(nx*1000 + ny);
         }
-        
+
     }
-    /*
-    for(int i=0; i<m; i++){
-        for(int j=0; j<n; j++){
-            if( dir[i][j] != -1 )
-                cout << dir[i][j];
-            else
-                cout << ' ';
-            cout << " \n"[j==n-1];
-        }
-    }
-    */
-    
     int x = to.first;
     int y = to.second;
     while( x != from.first || y != from.second ){
@@ -510,105 +362,6 @@ vector<pii> shortest_route( const pii& from,const pii& to ){
     }
 
     return route;
-    
+
 }
 
-vector<pii> FloorCleaner::go_to( const pii& to ){
-    vector<vector<int>> dir;
-    dir.resize(m);
-    for(int i=0; i<m; i++) dir[i].resize(n, -1);
-
-    queue<int> q;
-    q.emplace( _pos.first*1000 + _pos.second );
-    dir[_pos.first][_pos.second] = 10;
-    dir[R.first][R.second] = 10;
-    while( !q.empty() ){
-        int x = q.front()/1000;
-        int y = q.front()%1000;
-        //cout << x << ' ' << y << '\n';
-        if( x == to.first && y == to.second ) break;
-        q.pop();
-        
-        for(int i=0; i<4; i++){
-            int nx = x + dir_x[i];
-            int ny = y + dir_y[i];
-            if( isWall(nx,ny) || dir[nx][ny] != -1 ) continue;
-
-            dir[nx][ny] = (i+2)%4;
-            q.emplace(nx*1000 + ny);
-        }
-        
-    }
-    /*
-    for(int i=0; i<m; i++){
-        for(int j=0; j<n; j++){
-            cout << dir[i][j] << " \n"[j==n-1];
-        }
-    }
-    */
-    
-    int x = to.first;
-    int y = to.second;
-    vector<pii> route;
-    while( x != _pos.first || y != _pos.second ){
-        route.emplace_back(x,y);
-        int& d = dir[x][y];
-        x += dir_x[ d ];
-        y += dir_y[ d ];
-    }
-    return route;
-    
-}
-/*
-bool FloorCleaner::go_to( const pii& to ){
-    vector<vector<int>> dir;
-    dir.resize(m);
-    for(int i=0; i<m; i++) dir[i].resize(n, -1);
-
-    queue<int> q;
-    q.emplace( _pos.first*1000 + _pos.second );
-    dir[_pos.first][_pos.second] = 10;
-    dir[R.first][R.second] = 10;
-    while( !q.empty() ){
-        int x = q.front()/1000;
-        int y = q.front()%1000;
-        //cout << x << ' ' << y << '\n';
-        if( x == to.first && y == to.second ) break;
-        q.pop();
-        
-        for(int i=0; i<4; i++){
-            int nx = x + dir_x[i];
-            int ny = y + dir_y[i];
-            if( isWall(nx,ny) || dir[nx][ny] != -1 ) continue;
-
-            dir[nx][ny] = (i+2)%4;
-            q.emplace(nx*1000 + ny);
-        }
-        
-    }
-    
-    for(int i=0; i<m; i++){
-        for(int j=0; j<n; j++){
-            cout << dir[i][j] << " \n"[j==n-1];
-        }
-    }
-    
-    int x = to.first;
-    int y = to.second;
-    vector<pii> route;
-    while( x != _pos.first || y != _pos.second ){
-        route.emplace_back(x,y);
-        int& d = dir[x][y];
-        x += dir_x[ d ];
-        y += dir_y[ d ];
-    }
-    
-    if( (int)route.size() + Step_to_R(to) >= _life )
-        return false;
-    for( auto rit = route.rbegin(); rit != route.rend(); rit++)
-        walk( *rit );
-    
-    return true;
-    
-}
-*/
