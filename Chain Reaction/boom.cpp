@@ -87,11 +87,11 @@ class Student{
                     sel_value = v;
                     sel_c = color[now_x][now_y];
                 }
-                cout << "(" << now_x << ", " << now_y << ") " << v << ": " << color[now_x][now_y] << endl;
+                //cout << "(" << now_x << ", " << now_y << ") " << v << ": " << color[now_x][now_y] << endl;
 
             }
-            cout << "---------------------" << endl;
-            cout << "(" << x << ", " << y << ") " << sel_value << ": " << sel_c << endl << endl;
+            //cout << "---------------------" << endl;
+            //cout << "(" << x << ", " << y << ") " << sel_value << ": " << sel_c << endl << endl;
 
         }
         int getX(){
@@ -111,10 +111,6 @@ class Student{
 
         bool valid( int x, int y ){
             return( x >= 0 && x < 5 && y >= 0 && y < 6 );
-        }
-
-        int board_value(int Record[5][6], int Max[5][6], Color color[5][6], Color mycolor){
-            
         }
 
         int point_value(int x, int y, int Record[5][6], int Max[5][6], Color color[5][6], Color inputColor ){
@@ -138,20 +134,19 @@ class Student{
                     value -= 100;
                 }
                 else{
-                    if( dist <= nd )
-                        value += 1000;
-                    else
-                        value -= 1000;
+                    if( dist == 1 ){
+                        if( nd == 1 ) return 1e9;
+                        else          return -1e9;
+                    }
+                    else{
+                        if( dist <= nd ) value += 1000;
+                        else             value -= 1000;
+                    }
                 }
             }
             //cout << x << ", " << y << ": " << value << endl;
 
-            if( value == 0 ){
-                return ( dist == 1 ) ? -50*cnt : -dist;
-            }
-            else{
-                return ( color[x][y] == White ) ? value-dist : value-10*dist;
-            }
+            return ( color[x][y] == White ) ? value-dist : value-10*dist;
         }
 
         int count_color( Color color[5][6], Color target ){

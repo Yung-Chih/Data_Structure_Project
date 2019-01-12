@@ -55,6 +55,10 @@ class Student{
             return( x >= 0 && x < 5 && y >= 0 && y < 6 );
         }
 
+        int board_value(int Record[5][6], int Max[5][6], Color color[5][6], Color mycolor){
+            
+        }
+
         int point_value(int x, int y, int Record[5][6], int Max[5][6], Color color[5][6], Color inputColor ){
             int dist = Max[x][y] - Record[x][y];
 
@@ -76,19 +80,20 @@ class Student{
                     value -= 100;
                 }
                 else{
-                    if( dist == 1 ){
-                        if( nd == 1 ) return 1e9;
-                        else          return -1e9;
-                    }
-                    else{
-                        if( dist <= nd ) value += 1000;
-                        else             value -= 1000;
-                    }
+                    if( dist <= nd )
+                        value += 1000;
+                    else
+                        value -= 1000;
                 }
             }
             //cout << x << ", " << y << ": " << value << endl;
 
-            return ( color[x][y] == White ) ? value-dist : value-10*dist;
+            if( value == 0 ){
+                return ( dist == 1 ) ? -50*cnt : -dist;
+            }
+            else{
+                return ( color[x][y] == White ) ? value-dist : value-10*dist;
+            }
         }
 
         int count_color( Color color[5][6], Color target ){
